@@ -112,7 +112,7 @@ public class user {
 
             // 解析json下所有imgUri
             regular.getUri(json.body());
-            Thread.sleep(8000);
+            Thread.sleep(5000);
 
             // 获取所有imgUri
             for (int j = 0; j < map.size(); j++) {
