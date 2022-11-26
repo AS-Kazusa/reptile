@@ -2,8 +2,8 @@ package kazusa.service.app.pixiv;
 
 import kazusa.infrastructure.Warehouse.model.http;
 import kazusa.infrastructure.Warehouse.model.log;
-import kazusa.service.field.brace.downloader;
 import kazusa.service.field.brace.JdkHttpclient;
+import kazusa.service.field.brace.downloader;
 import kazusa.service.field.core.analysis;
 
 import java.io.IOException;

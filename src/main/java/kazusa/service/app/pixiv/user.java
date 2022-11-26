@@ -2,8 +2,8 @@ package kazusa.service.app.pixiv;
 
 import kazusa.infrastructure.Warehouse.model.http;
 import kazusa.infrastructure.Warehouse.model.log;
-import kazusa.service.field.brace.downloader;
 import kazusa.service.field.brace.JdkHttpclient;
+import kazusa.service.field.brace.downloader;
 import kazusa.service.field.core.analysis;
 
 import java.io.IOException;
@@ -34,6 +34,11 @@ public class user {
     JdkHttpclient<byte[]> httpclient = new JdkHttpclient<>();
 
     downloader downloader = new downloader();
+
+    /**
+     * 用户id
+     */
+    String uid = "22695263";
 
     /**
      * show爬取公开收藏
@@ -97,7 +102,7 @@ public class user {
 
         // 获取所有json
         while (size <= length) {
-            String jsonUri = "https://www.pixiv.net/ajax/user/22695263/illusts/bookmarks?tag=&offset=" + size + "&limit=48&rest=" + uriRestParameter + "&lang=zh";
+            String jsonUri = "https://www.pixiv.net/ajax/user/"+ uid + "/illusts/bookmarks?tag=&offset=" + size + "&limit=48&rest=" + uriRestParameter + "&lang=zh";
             System.out.println(jsonUri);
             // 配置uri
             http.setUri(jsonUri);

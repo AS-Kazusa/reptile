@@ -1,7 +1,6 @@
 package kazusa.service.field.core;
 
 
-import kazusa.infrastructure.Warehouse.model.http;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,19 +11,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static kazusa.infrastructure.Warehouse.model.http.getHttp;
-import static kazusa.infrastructure.config.config.config;
 
 /**
  * 页面解析

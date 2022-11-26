@@ -13,13 +13,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 import static kazusa.infrastructure.Warehouse.model.http.getHttp;
 import static kazusa.service.field.utils.SSLCertificateIgnored.SslIgnored;
-import static kazusa.service.field.utils.ThreadPool.ThreadPoolConfig;
-import static kazusa.service.field.utils.ThreadPool.threadPoolExecutor;
 
 public class JdkHttpclient<T> {
 
@@ -42,6 +40,8 @@ public class JdkHttpclient<T> {
             // IP代理:传入代理IP和端口
             newBuilder.proxy(ProxySelector.of(new InetSocketAddress(http.getProxyIP(), http.getPort())));
         }
+        // 配置单线程池
+        newBuilder.executor(Executors.newSingleThreadExecutor());
         /*
             配置缓存cookie设置,传入
             cookie管理器(可为null,为null则创建InMemoryCookieStore类的默认cookie管理器)
