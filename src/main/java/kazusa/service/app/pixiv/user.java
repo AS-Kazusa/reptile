@@ -2,6 +2,7 @@ package kazusa.service.app.pixiv;
 
 import kazusa.infrastructure.Warehouse.model.http;
 import kazusa.infrastructure.Warehouse.model.log;
+import kazusa.service.app.reptile;
 import kazusa.service.field.brace.JdkHttpclient;
 import kazusa.service.field.brace.downloader;
 import kazusa.service.field.core.analysis;
@@ -23,7 +24,7 @@ import static kazusa.infrastructure.config.config.config;
 import static kazusa.service.field.core.analysis.map;
 import static kazusa.service.field.core.analysis.types;
 
-public class user {
+public class user implements reptile {
 
     http http = getHttp();
 
@@ -93,7 +94,7 @@ public class user {
      * @throws InterruptedException
      * @throws KeyManagementException
      */
-    public void reptile() throws IOException, NoSuchAlgorithmException, URISyntaxException, NoSuchProviderException, ExecutionException, InterruptedException, KeyManagementException {
+    public void reptile() throws Exception {
         // 开始计时
         long time = new Date().getTime();
 

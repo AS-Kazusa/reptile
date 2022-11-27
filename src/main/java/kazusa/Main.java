@@ -14,7 +14,7 @@ import static kazusa.service.field.utils.ThreadPool.threadPoolExecutor;
 
 public class Main implements Runnable {
 
-    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, URISyntaxException, NoSuchProviderException, ExecutionException, InterruptedException, KeyManagementException {
+    public static void main(String[] args) throws Exception {
         new user().reptile();
         //concurrency();
     }

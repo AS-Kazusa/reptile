@@ -1,29 +1,39 @@
 package kazusa.service.field.brace;
 
 import kazusa.infrastructure.Warehouse.model.down;
+import kazusa.infrastructure.Warehouse.model.http;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.http.HttpResponse;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static kazusa.infrastructure.Warehouse.model.down.getDown;
+import static kazusa.infrastructure.config.config.config;
+import static kazusa.service.field.core.analysis.types;
 
 /**
  * 资源下载器
  */
-
 @Slf4j
 public class downloader {
 
-    public static void main(String[] args) {
-        Double d = 0.00;
-        d++;
-        System.out.println(1.00 / 100);
-        System.out.println(d);
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException, URISyntaxException, NoSuchProviderException, ExecutionException, InterruptedException, KeyManagementException {
+        config();
+        http.getHttp().setUri("");
+        JdkHttpclient<byte[]> httpclient = new JdkHttpclient<>();
+        HttpResponse<byte[]> httpResponse = httpclient.getHttpclient(HttpResponse.BodyHandlers.ofByteArray());
+        new downloader().downloader(httpResponse.body(),0L);
     }
 
     down down = getDown();
