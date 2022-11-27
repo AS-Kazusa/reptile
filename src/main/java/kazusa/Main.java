@@ -2,13 +2,6 @@ package kazusa;
 
 import kazusa.service.app.pixiv.user;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.util.concurrent.ExecutionException;
-
 import static kazusa.service.field.utils.ThreadPool.ThreadPoolConfig;
 import static kazusa.service.field.utils.ThreadPool.threadPoolExecutor;
 

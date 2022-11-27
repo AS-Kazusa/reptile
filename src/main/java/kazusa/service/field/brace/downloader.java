@@ -14,13 +14,11 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static kazusa.infrastructure.Warehouse.model.down.getDown;
 import static kazusa.infrastructure.config.config.config;
-import static kazusa.service.field.core.analysis.types;
 
 /**
  * 资源下载器
