@@ -13,8 +13,6 @@ import java.net.http.HttpResponse;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static kazusa.infrastructure.Warehouse.model.down.getDown;
@@ -31,20 +29,16 @@ public class downloader {
         http.getHttp().setUri("");
         JdkHttpclient<byte[]> httpclient = new JdkHttpclient<>();
         HttpResponse<byte[]> httpResponse = httpclient.getHttpclient(HttpResponse.BodyHandlers.ofByteArray());
-        new downloader().downloader(httpResponse.body(),0L);
+        new downloader().downloader(httpResponse.body(),"");
     }
 
     down down = getDown();
 
-    public static List<String> logs = new ArrayList<>();
-
-    public void downloader(byte[] bytes, Long i) throws IOException {
+    public void downloader(byte[] bytes, String imgName) throws IOException {
         if (bytes != null) {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-            FileUtils.copyInputStreamToFile(byteArrayInputStream,new File(down.getPath() + i + "." + down.getType()));
-            log.info("下载:" + i);
-            return;
+            FileUtils.copyInputStreamToFile(byteArrayInputStream,new File(down.getPath() + imgName + "." + down.getType()));
+            log.info("下载:" + imgName);
         }
-        logs.add("第" + i + "图片爬取失败");
     }
 }

@@ -1,11 +1,12 @@
 package kazusa.service.app.pixiv;
 
 import kazusa.infrastructure.Warehouse.model.http;
+import kazusa.infrastructure.Warehouse.model.img;
 import kazusa.infrastructure.Warehouse.model.log;
 import kazusa.service.app.reptile;
 import kazusa.service.field.brace.JdkHttpclient;
 import kazusa.service.field.brace.downloader;
-import kazusa.service.field.core.analysis;
+import kazusa.service.field.core.analysis.pixiv.pixiv;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,16 +22,17 @@ import java.util.concurrent.ExecutionException;
 
 import static kazusa.infrastructure.Warehouse.model.http.getHttp;
 import static kazusa.infrastructure.config.config.config;
-import static kazusa.service.field.core.analysis.map;
-import static kazusa.service.field.core.analysis.types;
+import static kazusa.service.field.core.analysis.pixiv.pixiv.map;
+import static kazusa.service.field.core.analysis.pixiv.pixiv.types;
 
+// https://www.pixiv.net/ajax/user/22695263/illusts/bookmarks?tag=&offset=0&limit=48&rest=hide&lang=zh
 public class user implements reptile {
 
     http http = getHttp();
 
     JdkHttpclient<String> stringJdkHttpclient = new JdkHttpclient<>();
 
-    analysis.regular regular = new analysis.regular();
+    pixiv pixivAnalysis = new pixiv();
 
     JdkHttpclient<byte[]> httpclient = new JdkHttpclient<>();
 
@@ -70,11 +72,6 @@ public class user implements reptile {
     }
 
     /**
-     * 爬取图片数
-     */
-    Long i = 0L;
-
-    /**
      * 时间格式化
      */
     SimpleDateFormat data = new SimpleDateFormat("yyyy年MM月dd日E H小时mm分ss秒");
@@ -112,12 +109,13 @@ public class user implements reptile {
             HttpResponse<String> json = stringJdkHttpclient.getHttpclient(HttpResponse.BodyHandlers.ofString());
 
             // 解析json下所有imgUri
-            regular.getUri(json.body());
+            pixivAnalysis.getUri(json.body());
             Thread.sleep(5000);
 
             // 获取所有imgUri
             for (int j = 0; j < map.size(); j++) {
-                String imgUri = map.get(j);
+                img img = map.get(j);
+                String imgUri = img.getUri();
 
                 // imgUri下图片数
                 int k = 0;
@@ -155,8 +153,7 @@ public class user implements reptile {
                         // 保存正确资源类型
                         temp = type;
                         System.out.println(imgUri + k + types.get(type));
-                        downloader.downloader(httpResponse.body(),i);
-                        i++;
+                        downloader.downloader(httpResponse.body(),img.getName());
                     }
                     k++;
                 // 判断该imgUri下无资源退出,这里值变为取反没搞懂

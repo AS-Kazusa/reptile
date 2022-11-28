@@ -5,10 +5,9 @@ import kazusa.infrastructure.Warehouse.model.http;
 import kazusa.service.app.reptile;
 import kazusa.service.field.brace.JdkHttpclient;
 import kazusa.service.field.brace.downloader;
+import kazusa.service.field.core.analysis.pixiv.pixiv;
 
 import java.net.http.HttpResponse;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static kazusa.infrastructure.Warehouse.model.down.getDown;
 import static kazusa.infrastructure.Warehouse.model.http.getHttp;
@@ -40,28 +39,12 @@ public class gif implements reptile {
         String imgUri = "https://www.pixiv.net/ajax/illust/" + imgId + "/ugoira_meta?lang=zh";
         http.setUri(imgUri);
         HttpResponse<String> json = stringJdkHttpclient.getHttpclient(HttpResponse.BodyHandlers.ofString());
-        String s = json.body();
-
-        s = s.replace("\\", "/");
-
-        String getUri = "https:////i.pximg.net//img-zip-ugoira//img//[0-9/]*_ugoira1920x1080.zip";
-        // 传入正则规则
-        Pattern pattern = Pattern.compile(getUri);
-        // 获取匹配字符
-        Matcher matcher = pattern.matcher(s);
-        while (matcher.find()) {
-            imgUri = matcher.group(0);
-            Pattern pattern_ = Pattern.compile("[0-9/]*_");
-            Matcher matcher_ = pattern_.matcher(imgUri);
-            while (matcher_.find()) {
-                imgUri = matcher_.group(0);
-            }
-        }
-        imgUri = "https://i.pximg.net/img-zip-ugoira/img" + imgUri + "ugoira1920x1080.zip";
+        imgUri = new pixiv().getGif(json.body(), 0);
         System.out.println(imgUri);
+
         http.setUri(imgUri);
         HttpResponse<byte[]> httpResponse = httpclient.getHttpclient(HttpResponse.BodyHandlers.ofByteArray());
         down.setType("zip");
-        downloader.downloader(httpResponse.body(),0L);
+        downloader.downloader(httpResponse.body(),"gif");
     }
 }

@@ -4,7 +4,8 @@ import kazusa.infrastructure.Warehouse.model.down;
 import kazusa.infrastructure.Warehouse.model.header;
 import kazusa.infrastructure.Warehouse.model.http;
 import kazusa.service.field.brace.selenium;
-import kazusa.service.field.core.analysis;
+import kazusa.service.field.core.analysis.analysis;
+import kazusa.service.field.core.analysis.pixiv.pixiv;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -16,7 +17,6 @@ import java.util.List;
 import static kazusa.infrastructure.Warehouse.model.down.getDown;
 import static kazusa.infrastructure.Warehouse.model.http.getHttp;
 import static kazusa.service.field.brace.JdkHttpclient.list;
-import static kazusa.service.field.core.analysis.types;
 
 public class config {
 
@@ -54,7 +54,7 @@ public class config {
      * selenium配置
      */
     private static void analysisConfig(HashMap<String,Object> hashMap) {
-        types = (List) hashMap.get("type");
+        pixiv.types = (List) hashMap.get("type");
         HashMap<String,Object> seleniumConfig = (HashMap) hashMap.get("seleniumConfig");
         selenium.seleniumDrivePath = (String) seleniumConfig.get("seleniumDrivePath");
         analysis.selenium.Xpath = (String) seleniumConfig.get("Xpath");

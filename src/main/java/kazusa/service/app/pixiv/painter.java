@@ -1,10 +1,11 @@
 package kazusa.service.app.pixiv;
 
 import kazusa.infrastructure.Warehouse.model.http;
+import kazusa.infrastructure.Warehouse.model.img;
 import kazusa.infrastructure.Warehouse.model.log;
 import kazusa.service.field.brace.JdkHttpclient;
 import kazusa.service.field.brace.downloader;
-import kazusa.service.field.core.analysis;
+import kazusa.service.field.core.analysis.pixiv.pixiv;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,8 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 import static kazusa.infrastructure.Warehouse.model.http.getHttp;
 import static kazusa.infrastructure.config.config.config;
-import static kazusa.service.field.core.analysis.map;
-import static kazusa.service.field.core.analysis.types;
+import static kazusa.service.field.core.analysis.pixiv.pixiv.types;
 
 public class painter {
 
@@ -42,7 +42,7 @@ public class painter {
 
     JdkHttpclient<String> stringJdkHttpclient = new JdkHttpclient<>();
 
-    analysis.regular regular = new analysis.regular();
+    pixiv pixivAnalysis = new pixiv();
 
     JdkHttpclient<byte[]> httpclient = new JdkHttpclient<>();
 
@@ -55,11 +55,6 @@ public class painter {
     SimpleDateFormat data = new SimpleDateFormat("yyyy年MM月dd日E H小时mm分ss秒");
 
     List<String> logs = new ArrayList<>();
-
-    /**
-     * 爬取图片数
-     */
-    Long i = 0L;
 
     /**
      * 画师作品爬取
@@ -88,12 +83,13 @@ public class painter {
             HttpResponse<String> json = stringJdkHttpclient.getHttpclient(HttpResponse.BodyHandlers.ofString());
 
             // 解析json下所有imgUri
-            regular.getUri(json.body());
+            pixivAnalysis.getUri(json.body());
             Thread.sleep(8000);
 
             // 获取所有imgUri
-            for (int j = 0; j < map.size(); j++) {
-                String imgUri = map.get(j);
+            for (int j = 0; j < pixiv.map.size(); j++) {
+                img img = pixiv.map.get(j);
+                String imgUri = img.getUri();
 
                 // imgUri下图片数
                 int k = 0;
@@ -131,8 +127,7 @@ public class painter {
                         // 保存正确资源类型
                         temp = l;
                         System.out.println(imgUri + k + types.get(l));
-                        downloader.downloader(httpResponse.body(),i);
-                        i++;
+                        downloader.downloader(httpResponse.body(),img.getName());
                     }
                     k++;
                 // 判断该imgUri下无资源退出,这里值变为取反原因不明
