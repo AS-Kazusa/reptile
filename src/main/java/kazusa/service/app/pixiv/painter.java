@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import static kazusa.infrastructure.Warehouse.model.http.getHttp;
 import static kazusa.infrastructure.config.config.config;
 import static kazusa.service.field.core.analysis.pixiv.pixiv.*;
-import static kazusa.service.field.core.analysis.pixiv.pixiv.map;
 import static kazusa.service.field.utils.utils.ramo;
 
 public class painter implements reptile {

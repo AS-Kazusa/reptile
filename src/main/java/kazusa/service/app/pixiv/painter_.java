@@ -3,14 +3,10 @@ package kazusa.service.app.pixiv;
 import kazusa.infrastructure.Warehouse.model.http;
 import kazusa.service.app.reptile;
 import kazusa.service.field.brace.JdkHttpclient;
-import kazusa.service.field.brace.downloader;
 import kazusa.service.field.core.analysis.pixiv.pixiv;
 
 import java.net.http.HttpResponse;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static kazusa.infrastructure.Warehouse.model.http.getHttp;
 import static kazusa.infrastructure.config.config.config;

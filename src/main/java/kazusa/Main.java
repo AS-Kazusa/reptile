@@ -1,16 +1,7 @@
 package kazusa;
 
-import kazusa.service.app.pixiv.painter;
-import kazusa.service.app.pixiv.painter_;
 import kazusa.service.app.pixiv.user;
-import kazusa.service.field.brace.JdkHttpclient;
-import kazusa.service.field.core.analysis.pixiv.pixiv;
-import org.apache.commons.lang3.StringUtils;
 
-import java.net.http.HttpResponse;
-
-import static kazusa.infrastructure.Warehouse.model.http.getHttp;
-import static kazusa.infrastructure.config.config.config;
 import static kazusa.service.field.utils.ThreadPool.ThreadPoolConfig;
 import static kazusa.service.field.utils.ThreadPool.threadPoolExecutor;
 
