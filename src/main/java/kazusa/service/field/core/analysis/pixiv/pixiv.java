@@ -3,6 +3,7 @@ package kazusa.service.field.core.analysis.pixiv;
 
 import kazusa.infrastructure.Warehouse.model.img;
 import kazusa.service.field.brace.JdkHttpclient;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -32,12 +33,10 @@ public class pixiv {
         config();
         getHttp().setUri(uri);
         HttpResponse<String> json = new JdkHttpclient<String>().getHttpclient(HttpResponse.BodyHandlers.ofString());
-        new pixiv().getImgName(json.body());
+        new pixiv().getImgID(json.body());
     }
 
-    /**
-     * 正则处理
-     */
+
     public void getUri(String json) {
         json = json.replace("\\", "/");
         getImgName(json);
@@ -111,6 +110,29 @@ public class pixiv {
             }
         }
         return imgUri;
+    }
+
+    /**
+     * 存放指定画师作品id
+     */
+    public static List<String> imgIds = new ArrayList<>();
+
+    public void getImgID(String json) {
+        String getImgIdString = "illusts\":\\{[\"0-9:nul,]*";
+        // 传入正则规则
+        Pattern pattern = Pattern.compile(getImgIdString);
+        // 获取匹配字符
+        Matcher matcher = pattern.matcher(json);
+        while (matcher.find()) {
+            String getImgId = "\\d*";
+            Pattern pattern_ = Pattern.compile(getImgId);
+            Matcher matcher_ = pattern_.matcher(matcher.group(0));
+            while (matcher_.find()) {
+                if (StringUtils.isNotBlank(matcher_.group(0))) {
+                    imgIds.add(matcher_.group(0));
+                }
+            }
+        }
     }
 
     /**

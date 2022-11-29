@@ -7,6 +7,7 @@ import kazusa.service.app.reptile;
 import kazusa.service.field.brace.JdkHttpclient;
 import kazusa.service.field.brace.downloader;
 import kazusa.service.field.core.analysis.pixiv.pixiv;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -24,6 +25,7 @@ import static kazusa.infrastructure.Warehouse.model.http.getHttp;
 import static kazusa.infrastructure.config.config.config;
 import static kazusa.service.field.core.analysis.pixiv.pixiv.map;
 import static kazusa.service.field.core.analysis.pixiv.pixiv.types;
+import static kazusa.service.field.utils.utils.ramo;
 
 // https://www.pixiv.net/ajax/user/22695263/illusts/bookmarks?tag=&offset=0&limit=48&rest=hide&lang=zh
 public class user implements reptile {
@@ -37,6 +39,16 @@ public class user implements reptile {
     JdkHttpclient<byte[]> httpclient = new JdkHttpclient<>();
 
     downloader downloader = new downloader();
+
+    /**
+     * 时间格式化
+     */
+    SimpleDateFormat data = new SimpleDateFormat("yyyy年MM月dd日E H小时mm分ss秒");
+
+    /**
+     * 日志
+     */
+    List<String> logs = new ArrayList<>();
 
     /**
      * 用户id
@@ -65,21 +77,9 @@ public class user implements reptile {
     Long length = 6 * 8 * (pages - 1);
 
     /**
-     * @return 随机阻塞时间
+     * 图片名去重
      */
-    private int ramo() {
-        return (int) (Math.random() * 9);
-    }
-
-    /**
-     * 时间格式化
-     */
-    SimpleDateFormat data = new SimpleDateFormat("yyyy年MM月dd日E H小时mm分ss秒");
-
-    /**
-     * 日志
-     */
-    List<String> logs = new ArrayList<>();
+    Long l = 0L;
 
     /**
      * 账户收藏图片爬取
@@ -94,10 +94,17 @@ public class user implements reptile {
     public void reptile() throws Exception {
         // 开始计时
         long time = new Date().getTime();
-
         // 配置信息
         config();
+        getJson();
+        System.out.println("爬取完成,请确认:" + (size - 48) + "\t耗时:" + ((new Date().getTime() - time) / 1000) + "s");
+        System.out.println("日志记录爬取失败uri:" + logs.size());
+        for (String log : logs) {
+            System.out.println(log);
+        }
+    }
 
+    public void getJson() throws Exception {
         // 获取所有json
         while (size <= length) {
             String jsonUri = "https://www.pixiv.net/ajax/user/"+ uid + "/illusts/bookmarks?tag=&offset=" + size + "&limit=48&rest=" + uriRestParameter + "&lang=zh";
@@ -111,61 +118,65 @@ public class user implements reptile {
             // 解析json下所有imgUri
             pixivAnalysis.getUri(json.body());
             Thread.sleep(5000);
-
-            // 获取所有imgUri
-            for (int j = 0; j < map.size(); j++) {
-                img img = map.get(j);
-                String imgUri = img.getUri();
-
-                // imgUri下图片数
-                int k = 0;
-                // 图片类型
-                int type = 0;
-                // 保存该imgUri下资源正确类型
-                int temp = 0;
-                HttpResponse<byte[]> httpResponse = null;
-                do {
-                    do {
-                        // 判断不为该imgUri下第一张图片
-                        if(k >= 1) {
-                            // 获取正确类型
-                            type = temp;
-                            // 判断是否为该imgUri下第一张图片的二次操作
-                            if (httpResponse.statusCode() != 200) {
-                                break;
-                            }
-                        }
-
-                        // 配置imgUri
-                        http.setUri(imgUri + k + types.get(type++));
-                        httpResponse = httpclient.getHttpclient(HttpResponse.BodyHandlers.ofByteArray());
-
-                        Thread.sleep(ramo() * 1000L);
-                    } while (httpResponse.statusCode() != 200 && type < types.size());
-
-                    // 日志记录
-                    if (k == 0 && httpResponse.statusCode() != 200) {
-                        logs.add(new log(data.format(new Date()),httpResponse.statusCode(),imgUri + k).toString());
-                    }
-
-                    if (httpResponse.statusCode() == 200) {
-                        type--;
-                        // 保存正确资源类型
-                        temp = type;
-                        System.out.println(imgUri + k + types.get(type));
-                        downloader.downloader(httpResponse.body(),img.getName());
-                    }
-                    k++;
-                // 判断该imgUri下无资源退出,这里值变为取反没搞懂
-                } while (httpResponse.statusCode() == 200);
-            }
+            getImgUri();
             // 单页显示最大图片数
             size += 48;
         }
-        System.out.println("爬取完成,请确认:" + (size - 48) + "\t耗时:" + ((new Date().getTime() - time) / 1000) + "s");
-        System.out.println("日志记录爬取失败uri:" + logs.size());
-        for (String log : logs) {
-            System.out.println(log);
+    }
+
+    public void getImgUri() throws Exception {
+        // 获取所有imgUri
+        for (int j = 0; j < map.size(); j++) {
+            img img = map.get(j);
+            String imgUri = img.getUri();
+
+            // imgUri下图片数
+            int k = 0;
+            // 图片类型
+            int type = 0;
+            // 保存该imgUri下资源正确类型
+            int temp = 0;
+            HttpResponse<byte[]> httpResponse = null;
+            do {
+                do {
+                    // 判断不为该imgUri下第一张图片
+                    if(k >= 1) {
+                        // 获取正确类型
+                        type = temp;
+                        // 判断是否为该imgUri下第一张图片的二次操作
+                        if (httpResponse.statusCode() != 200) {
+                            break;
+                        }
+                    }
+
+                    // 配置imgUri
+                    http.setUri(imgUri + k + types.get(type++));
+                    httpResponse = httpclient.getHttpclient(HttpResponse.BodyHandlers.ofByteArray());
+
+                    Thread.sleep(ramo());
+                } while (httpResponse.statusCode() != 200 && type < types.size());
+
+                // 日志记录
+                if (k == 0 && httpResponse.statusCode() != 200) {
+                    logs.add(new log(data.format(new Date()),httpResponse.statusCode(),imgUri + k).toString());
+                }
+
+                if (httpResponse.statusCode() == 200) {
+                    type--;
+                    // 保存正确资源类型
+                    temp = type;
+                    System.out.println(imgUri + k + types.get(type));
+                    // 防重名
+                    if (StringUtils.isBlank(img.getName()) || k != 0) {
+                        downloader.downloader(httpResponse.body(),l + "");
+                    } else {
+                        downloader.downloader(httpResponse.body(),img.getName());
+                    }
+                    l++;
+                }
+                k++;
+                // 判断该imgUri下无资源退出,这里值变为取反没搞懂
+            } while (httpResponse.statusCode() == 200);
         }
     }
 }
